@@ -1,0 +1,2262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Plug | Nuclear Tech Economics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #1a252f;
+            --success: #2ecc71;
+            --space: #9b59b6;
+            --med: #1abc9c;
+            --agro: #f39c12;
+            --industry: #3498db;
+            --correct: #2ecc71;
+            --incorrect: #e74c3c;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo i {
+            margin-right: 10px;
+            color: var(--accent);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+            position: relative;
+        }
+        
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+        
+        nav ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 2px;
+            background-color: var(--accent);
+            transition: width 0.3s ease;
+        }
+        
+        nav ul li a:hover::after {
+            width: 70%;
+        }
+        
+        .hero {
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                        url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+            height: 80vh;
+            display: flex;
+            align-items: center;
+            position: relative;
+            color: white;
+            text-align: center;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.2;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            opacity: 0.9;
+        }
+        
+        .btn {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn:hover {
+            background-color: #c0392b;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(1px);
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 5px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 0;
+            border-radius: 100%;
+            transform: scale(1, 1) translate(-50%);
+            transform-origin: 50% 50%;
+        }
+        
+        .btn:focus:not(:active)::after {
+            animation: ripple 1s ease-out;
+        }
+        
+        @keyframes ripple {
+            0% {
+                transform: scale(0, 0);
+                opacity: 0.5;
+            }
+            100% {
+                transform: scale(20, 20);
+                opacity: 0;
+            }
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid white;
+            margin-left: 1.5rem;
+        }
+        
+        .btn-outline:hover {
+            background-color: white;
+            color: var(--primary);
+        }
+        
+        section {
+            padding: 5rem 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 4rem;
+            position: relative;
+        }
+        
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--primary);
+            display: inline-block;
+            padding-bottom: 1rem;
+        }
+        
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background-color: var(--accent);
+            border-radius: 2px;
+        }
+        
+        .section-title p {
+            max-width: 700px;
+            margin: 1rem auto 0;
+            color: #666;
+        }
+        
+        /* Features Grid */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .feature-card {
+            background-color: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .feature-tag {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background-color: var(--accent);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            z-index: 2;
+        }
+        
+        .feature-img {
+            height: 200px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .feature-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .feature-card:hover .feature-img img {
+            transform: scale(1.1);
+        }
+        
+        .feature-content {
+            padding: 1.5rem;
+        }
+        
+        .feature-content h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .feature-content h3 i {
+            margin-right: 10px;
+        }
+        
+        .feature-content p {
+            margin-bottom: 1.5rem;
+            color: #666;
+        }
+        
+        .feature-content a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            transition: color 0.3s ease;
+        }
+        
+        .feature-content a:hover {
+            color: var(--accent);
+        }
+        
+        .feature-content a i {
+            margin-left: 5px;
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-content a:hover i {
+            transform: translateX(5px);
+        }
+        
+        /* Sector Colors */
+        .med-color {
+            color: var(--med);
+        }
+        
+        .agro-color {
+            color: var(--agro);
+        }
+        
+        .industry-color {
+            color: var(--industry);
+        }
+        
+        .space-color {
+            color: var(--space);
+        }
+        
+        /* Comparison Section */
+        .comparison {
+            background-color: var(--light);
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        
+        .comparison-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .comparison-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .comparison-card h3 {
+            font-size: 1.6rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            text-align: center;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #eee;
+        }
+        
+        .comparison-item {
+            margin-bottom: 1.5rem;
+        }
+        
+        .comparison-item h4 {
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+            color: var(--dark);
+            display: flex;
+            align-items: center;
+        }
+        
+        .comparison-item h4 i {
+            margin-right: 8px;
+        }
+        
+        .comparison-item p {
+            color: #666;
+            padding-left: 28px;
+        }
+        
+        .pros-cons {
+            display: flex;
+            margin-top: 1rem;
+            gap: 1rem;
+        }
+        
+        .pros, .cons {
+            flex: 1;
+            padding: 1rem;
+            border-radius: 8px;
+        }
+        
+        .pros {
+            background-color: rgba(46, 204, 113, 0.1);
+            border-left: 4px solid var(--success);
+        }
+        
+        .cons {
+            background-color: rgba(231, 76, 60, 0.1);
+            border-left: 4px solid var(--accent);
+        }
+        
+        .pros h5, .cons h5 {
+            font-size: 1rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .pros h5 {
+            color: var(--success);
+        }
+        
+        .cons h5 {
+            color: var(--accent);
+        }
+        
+        .pros h5 i, .cons h5 i {
+            margin-right: 8px;
+        }
+        
+        .pros ul, .cons ul {
+            list-style-position: inside;
+            font-size: 0.9rem;
+            padding-left: 5px;
+        }
+        
+        .pros li, .cons li {
+            margin-bottom: 0.5rem;
+            position: relative;
+            padding-left: 15px;
+        }
+        
+        .pros li::before {
+            content: '✓';
+            color: var(--success);
+            position: absolute;
+            left: 0;
+        }
+        
+        .cons li::before {
+            content: '✗';
+            color: var(--accent);
+            position: absolute;
+            left: 0;
+        }
+        
+        /* Quiz Container */
+        .quiz-container {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .quiz-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
+        }
+        
+        .quiz-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .quiz-header h3 {
+            font-size: 2rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+        
+        .quiz-header p {
+            color: #666;
+        }
+        
+        .quiz-progress {
+            height: 10px;
+            background-color: #eee;
+            border-radius: 5px;
+            margin-bottom: 2rem;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 5px;
+        }
+        
+        .progress-text {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 0.8rem;
+            color: var(--primary);
+        }
+        
+        .question {
+            margin-bottom: 2rem;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .question.active {
+            display: block;
+        }
+        
+        .question h4 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+            line-height: 1.4;
+        }
+        
+        .options {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        
+        .option {
+            background-color: var(--light);
+            padding: 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            border: 2px solid transparent;
+        }
+        
+        .option:hover {
+            background-color: #e0e0e0;
+            border-color: var(--secondary);
+        }
+        
+        .option.selected {
+            background-color: rgba(52, 152, 219, 0.1);
+            border-color: var(--secondary);
+        }
+        
+        .option.correct {
+            background-color: rgba(46, 204, 113, 0.2);
+            border-color: var(--success);
+        }
+        
+        .option.incorrect {
+            background-color: rgba(231, 76, 60, 0.2);
+            border-color: var(--accent);
+        }
+        
+        .option input {
+            margin-right: 15px;
+            transform: scale(1.2);
+        }
+        
+        .quiz-footer {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+        
+        .results {
+            text-align: center;
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .results h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .score {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: var(--secondary);
+            margin: 1.5rem 0;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .score::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: linear-gradient(90deg, var(--secondary), var(--accent));
+            border-radius: 2px;
+        }
+        
+        .feedback {
+            margin-bottom: 2rem;
+            color: #666;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--secondary), var(--accent));
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 50px;
+            font-weight: bold;
+            margin-top: 1rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Calculator Section */
+        .calculator {
+            background-color: white;
+            border-radius: 10px;
+            padding: 2.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .calculator h3 {
+            text-align: center;
+            margin-bottom: 2.5rem;
+            color: var(--primary);
+            font-size: 1.8rem;
+        }
+        
+        .form-group {
+            margin-bottom: 1.8rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.8rem;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1.1rem;
+        }
+        
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        .form-group input:focus, .form-group select:focus {
+            border-color: var(--secondary);
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .calculator-result {
+            background-color: var(--light);
+            padding: 2rem;
+            border-radius: 10px;
+            margin-top: 2.5rem;
+            display: none;
+            animation: fadeIn 0.5s ease;
+            border-left: 5px solid var(--secondary);
+        }
+        
+        .calculator-result h4 {
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .calculator-result h4 i {
+            margin-right: 10px;
+            color: var(--secondary);
+        }
+        
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .result-item:last-child {
+            border-bottom: none;
+            font-weight: 600;
+            color: var(--primary);
+            font-size: 1.1rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid #eee;
+        }
+        
+        /* Info Cards */
+        .info-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+        
+        .info-card {
+            background-color: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+            border-top: 4px solid var(--secondary);
+        }
+        
+        .info-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .info-card h4 {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+        }
+        
+        .info-card h4 i {
+            margin-right: 10px;
+            color: var(--secondary);
+        }
+        
+        .info-card p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+        
+        /* References */
+        .references {
+            background-color: var(--light);
+            padding: 2rem;
+            border-radius: 10px;
+            margin-top: 3rem;
+        }
+        
+        .references h3 {
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+        
+        .references ul {
+            list-style-type: none;
+        }
+        
+        .references li {
+            margin-bottom: 0.8rem;
+            position: relative;
+            padding-left: 25px;
+            font-size: 0.9rem;
+            color: #555;
+        }
+        
+        .references li::before {
+            content: '•';
+            color: var(--secondary);
+            font-size: 1.5rem;
+            position: absolute;
+            left: 0;
+            top: -3px;
+        }
+        
+        /* Footer */
+        footer {
+            background: linear-gradient(135deg, var(--primary), var(--dark));
+            color: white;
+            padding: 4rem 0 2rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.8rem;
+            position: relative;
+            padding-bottom: 0.8rem;
+        }
+        
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background-color: var(--accent);
+        }
+        
+        .footer-column p, .footer-column a {
+            color: #ddd;
+            margin-bottom: 1rem;
+            display: block;
+            text-decoration: none;
+            transition: color 0.3s ease;
+            line-height: 1.6;
+        }
+        
+        .footer-column a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background-color: var(--accent);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .fade-in {
+            opacity: 0;
+            animation: fadeIn 0.6s ease forwards;
+        }
+        
+        .delay-1 { animation-delay: 0.2s; }
+        .delay-2 { animation-delay: 0.4s; }
+        .delay-3 { animation-delay: 0.6s; }
+        
+        /* Tooltip */
+        .tooltip {
+            position: relative;
+            display: inline-block;
+            cursor: pointer;
+            margin-left: 5px;
+        }
+        
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 200px;
+            background-color: var(--primary);
+            color: white;
+            text-align: center;
+            border-radius: 6px;
+            padding: 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.9rem;
+            font-weight: normal;
+        }
+        
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: var(--primary) transparent transparent transparent;
+        }
+        
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 1rem;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            nav ul li {
+                margin: 0.5rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2rem;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+            
+            .pros-cons {
+                flex-direction: column;
+            }
+            
+            .btn-outline {
+                margin-left: 0;
+                margin-top: 1rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .section-title h2 {
+                font-size: 1.8rem;
+            }
+            
+            .quiz-container {
+                padding: 1.5rem;
+            }
+            
+            .calculator {
+                padding: 1.5rem;
+            }
+        }
+        
+        /* Floating particles */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            background-color: rgba(52, 152, 219, 0.3);
+            border-radius: 50%;
+            animation: float linear infinite;
+        }
+        
+        @keyframes float {
+            0% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+
+        /* Additional styles for isotope content */
+        .isotope-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .method-card {
+            background: white;
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .method-card h3 {
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+
+        .method-card h3 i {
+            margin-right: 10px;
+            color: var(--secondary);
+        }
+
+        .isotope-applications {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .application-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            border-top: 3px solid var(--secondary);
+        }
+
+        .application-card h4 {
+            color: var(--dark);
+            margin-bottom: 0.8rem;
+        }
+
+        .application-card ul {
+            margin-left: 1.2rem;
+            color: #555;
+        }
+
+        .application-card li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Tab system */
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #eee;
+            margin-bottom: 1.5rem;
+        }
+
+        .tab {
+            padding: 0.8rem 1.5rem;
+            cursor: pointer;
+            font-weight: 600;
+            color: #666;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            color: var(--primary);
+            border-bottom: 3px solid var(--accent);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Chart containers */
+        .chart-container {
+            height: 300px;
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        /* Comparison tables */
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+        }
+
+        .comparison-table th, 
+        .comparison-table td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .comparison-table th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .pro {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .con {
+            color: var(--accent);
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <!-- Floating particles background -->
+    <div class="particles" id="particles"></div>
+    
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <i class="fas fa-atom"></i>
+                <span>The Plug</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#production">Production</a></li>
+                    <li><a href="#applications">Applications</a></li>
+                    <li><a href="#economics">Economics</a></li>
+                    <li><a href="#quiz">Quiz</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container hero-content fade-in">
+            <h1>Nuclear Isotopes: Beyond Energy</h1>
+            <p>Explore the economic potential and diverse applications of nuclear isotopes in medicine, agriculture, industry and space technology</p>
+            <div>
+                <a href="#production" class="btn">Explore Production</a>
+                <a href="#quiz" class="btn btn-outline">Take the Quiz</a>
+            </div>
+        </div>
+    </section>
+
+    <section id="production" class="container">
+        <div class="section-title fade-in">
+            <h2>Isotope Production Methods</h2>
+            <p>Three main approaches to producing isotopes for non-energy applications</p>
+        </div>
+
+        <div class="tabs fade-in">
+            <div class="tab active" onclick="openTab(event, 'reactor-method')">Reactor Method</div>
+            <div class="tab" onclick="openTab(event, 'accelerator-method')">Accelerator Method</div>
+            <div class="tab" onclick="openTab(event, 'generator-method')">Generator Method</div>
+        </div>
+
+        <div id="reactor-method" class="tab-content active fade-in">
+            <div class="method-card">
+                <h3><i class="fas fa-reactor"></i> Reactor Production</h3>
+                <p>Nuclear reactors produce isotopes through neutron activation of target materials placed in the reactor core or reflector. This is the most common method for producing isotopes like Molybdenum-99 (Mo-99) which decays to Technetium-99m (Tc-99m), the most widely used medical isotope.</p>
+                
+                <div class="chart-container">
+                    <canvas id="reactorChart"></canvas>
+                </div>
+
+                <h4>Key Characteristics:</h4>
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h5><i class="fas fa-check-circle"></i> Advantages</h5>
+                        <ul>
+                            <li>High production capacity (can supply global demand)</li>
+                            <li>Lower cost per unit at large scale</li>
+                            <li>Can produce multiple isotopes simultaneously</li>
+                            <li>Well-established technology with decades of refinement</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h5><i class="fas fa-times-circle"></i> Disadvantages</h5>
+                        <ul>
+                            <li>Requires nuclear infrastructure ($50-100M investment)</li>
+                            <li>Produces radioactive waste requiring disposal</li>
+                            <li>Isotopic purity challenges (co-production of unwanted isotopes)</li>
+                            <li>Limited number of production reactors worldwide</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h4>Economic Impact:</h4>
+                <p>Reactor production supports an estimated $257 billion in industrial sales in the US alone (USNRC, 1994). In Japan, agricultural radiation applications generated $964 million in 1997 (Kume et al., 2002).</p>
+            </div>
+        </div>
+
+        <div id="accelerator-method" class="tab-content fade-in">
+            <div class="method-card">
+                <h3><i class="fas fa-microchip"></i> Accelerator Production</h3>
+                <p>Particle accelerators produce isotopes by bombarding target materials with charged particles like protons. This method is particularly good for producing positron-emitting isotopes used in PET scans like Fluorine-18.</p>
+                
+                <div class="chart-container">
+                    <canvas id="acceleratorChart"></canvas>
+                </div>
+
+                <h4>Key Characteristics:</h4>
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h5><i class="fas fa-check-circle"></i> Advantages</h5>
+                        <ul>
+                            <li>No fission materials required (reduced regulatory burden)</li>
+                            <li>Can be installed in hospitals (local production)</li>
+                            <li>Produces less radioactive waste</li>
+                            <li>Easier isotope separation (cleaner products)</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h5><i class="fas fa-times-circle"></i> Disadvantages</h5>
+                        <ul>
+                            <li>Higher energy requirements (increased operating costs)</li>
+                            <li>Lower production rates (can't match reactor output)</li>
+                            <li>Limited to certain isotopes (can't produce Mo-99 economically)</li>
+                            <li>More complex for some isotopes (requires specialized targets)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h4>Economic Impact:</h4>
+                <p>While more expensive per unit, accelerators can be installed in hospitals, reducing transportation costs for short-lived isotopes. The global market for medical cyclotrons was valued at $290 million in 2020 and is growing at 6.5% annually.</p>
+            </div>
+        </div>
+
+        <div id="generator-method" class="tab-content fade-in">
+            <div class="method-card">
+                <h3><i class="fas fa-cogs"></i> Generator Systems</h3>
+                <p>Radioisotope generators use a long-lived parent isotope that decays into the desired daughter isotope, which can then be chemically separated. The most common example is the Mo-99/Tc-99m generator ("technetium cow") used in hospitals worldwide.</p>
+                
+                <div class="chart-container">
+                    <canvas id="generatorChart"></canvas>
+                </div>
+
+                <h4>Key Characteristics:</h4>
+                <div class="pros-cons">
+                    <div class="pros">
+                        <h5><i class="fas fa-check-circle"></i> Advantages</h5>
+                        <ul>
+                            <li>Provides short-lived isotopes on demand</li>
+                            <li>Compact and portable (can be used in hospitals)</li>
+                            <li>No need for on-site production facilities</li>
+                            <li>Reliable supply when parent isotope is available</li>
+                        </ul>
+                    </div>
+                    <div class="cons">
+                        <h5><i class="fas fa-times-circle"></i> Disadvantages</h5>
+                        <ul>
+                            <li>Limited to specific parent-daughter isotope pairs</li>
+                            <li>Dependent on supply chain for parent isotopes</li>
+                            <li>Limited shelf life (must be replaced regularly)</li>
+                            <li>Still requires initial production of parent isotope</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <h4>Economic Impact:</h4>
+                <p>Generators provide cost-effective access to short-lived isotopes but require a reliable supply chain for parent isotopes. The global market for Tc-99m generators is estimated at $1.2 billion annually.</p>
+            </div>
+        </div>
+
+        <div class="info-cards fade-in delay-1">
+            <div class="info-card">
+                <h4><i class="fas fa-exchange-alt"></i> Production Comparison</h4>
+                <p>Reactors produce about 95% of the world's medical isotopes, while accelerators are growing in importance for specialized applications and local production.</p>
+            </div>
+            <div class="info-card">
+                <h4><i class="fas fa-globe"></i> Global Infrastructure</h4>
+                <p>There are about 226 operational research reactors in 53 countries (IAEA 2024), while hundreds of medical cyclotrons operate worldwide, primarily in hospitals.</p>
+            </div>
+            <div class="info-card">
+                <h4><i class="fas fa-clock"></i> Half-Life Matters</h4>
+                <p>The choice between methods often depends on isotope half-life. Short-lived isotopes (hours) favor local accelerator production, while longer-lived isotopes (days) can be distributed from reactors.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="applications" class="comparison">
+        <div class="container">
+            <div class="section-title fade-in">
+                <h2>Isotope Applications</h2>
+                <p>Discover how isotopes are transforming medicine, agriculture, industry and space technology</p>
+            </div>
+
+            <div class="isotope-applications fade-in">
+                <div class="application-card">
+                    <h4><i class="fas fa-heartbeat med-color"></i> Medical Diagnostics</h4>
+                    <ul>
+                        <li><strong>Technetium-99m:</strong> 80% of nuclear medicine procedures</li>
+                        <li><strong>Fluorine-18:</strong> PET scans for cancer detection</li>
+                        <li><strong>Iodine-123:</strong> Thyroid imaging</li>
+                    </ul>
+                    <p>Global nuclear medicine market: $5.9 billion (2022)</p>
+                </div>
+
+                <div class="application-card">
+                    <h4><i class="fas fa-briefcase-medical med-color"></i> Medical Therapy</h4>
+                    <ul>
+                        <li><strong>Iodine-131:</strong> Thyroid cancer treatment</li>
+                        <li><strong>Lutetium-177:</strong> Targeted radionuclide therapy</li>
+                        <li><strong>Cobalt-60:</strong> Gamma Knife radiosurgery</li>
+                    </ul>
+                    <p>40% of cancer cures involve radiotherapy</p>
+                </div>
+
+                <div class="application-card">
+                    <h4><i class="fas fa-tractor agro-color"></i> Agriculture</h4>
+                    <ul>
+                        <li><strong>Sterile Insect Technique:</strong> Pest control</li>
+                        <li><strong>Mutation breeding:</strong> 3,200+ new crop varieties</li>
+                        <li><strong>Food irradiation:</strong> Preservation and safety</li>
+                    </ul>
+                    <p>Reduces food waste by up to 25%</p>
+                </div>
+
+                <div class="application-card">
+                    <h4><i class="fas fa-industry industry-color"></i> Industry</h4>
+                    <ul>
+                        <li><strong>Non-destructive testing:</strong> Weld inspections</li>
+                        <li><strong>Thickness gauging:</strong> Manufacturing quality control</li>
+                        <li><strong>Tracers:</strong> Oil and gas pipeline studies</li>
+                    </ul>
+                    <p>Global market: $1.2 billion (2023)</p>
+                </div>
+
+                <div class="application-card">
+                    <h4><i class="fas fa-rocket space-color"></i> Space Technology</h4>
+                    <ul>
+                        <li><strong>Plutonium-238:</strong> Power for deep space missions</li>
+                        <li><strong>Atomic batteries:</strong> Long-term spacecraft power</li>
+                        <li><strong>Scientific instruments:</strong> Planetary analysis</li>
+                    </ul>
+                    <p>Used in 30+ NASA missions</p>
+                </div>
+            </div>
+
+            <div class="references fade-in delay-1">
+                <h3><i class="fas fa-book"></i> References & Verified Sources</h3>
+                <ul>
+                    <li>Udalova, A. (2025). Non-energetic application of nuclear technologies. MEPhI University</li>
+                    <li>Samokhin, D. (2025). Machines and equipment of small modular reactors. MEPhI University</li>
+                    <li>IAEA (2024). Research Reactor Database</li>
+                    <li>World Nuclear Association (2024). Radioisotopes in Industry</li>
+                    <li>HackAtom Rwanda 2025 provided materials</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <section id="economics" class="container">
+        <div class="section-title fade-in">
+            <h2>Economic Comparisons</h2>
+            <p>Analyzing the costs and benefits of different isotope production and application methods</p>
+        </div>
+
+        <div class="comparison-table fade-in">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Method</th>
+                        <th>Initial Cost</th>
+                        <th>Operating Cost</th>
+                        <th>Output Capacity</th>
+                        <th>Best For</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Reactor</strong></td>
+                        <td class="con">Very High ($50-100M)</td>
+                        <td>Low per unit</td>
+                        <td class="pro">Very High</td>
+                        <td>Large-scale, multiple isotopes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Accelerator</strong></td>
+                        <td>High ($5-20M)</td>
+                        <td>Medium per unit</td>
+                        <td>Medium</td>
+                        <td>Specialized isotopes, local production</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Generator</strong></td>
+                        <td class="pro">Low ($50-500k)</td>
+                        <td>High per unit</td>
+                        <td class="con">Low</td>
+                        <td>Short-lived isotopes in hospitals</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="chart-container fade-in delay-1">
+            <canvas id="marketChart"></canvas>
+        </div>
+
+        <div class="calculator fade-in delay-2">
+            <h3><i class="fas fa-calculator"></i> Isotope Production Cost Calculator</h3>
+            <form id="cost-calculator">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="production-method">Production Method</label>
+                        <select id="production-method" required>
+                            <option value="">Select method</option>
+                            <option value="reactor">Reactor Method</option>
+                            <option value="accelerator">Accelerator Method</option>
+                            <option value="generator">Generator System</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="isotope">Isotope</label>
+                        <select id="isotope" required>
+                            <option value="">Select isotope</option>
+                            <option value="tc99m">Technetium-99m</option>
+                            <option value="co60">Cobalt-60</option>
+                            <option value="i131">Iodine-131</option>
+                            <option value="f18">Fluorine-18</option>
+                            <option value="mo99">Molybdenum-99</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="quantity">Quantity (curies)</label>
+                        <input type="number" id="quantity" min="1" value="10" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="facility-size">Facility Size</label>
+                        <select id="facility-size" required>
+                            <option value="small">Small (hospital/local)</option>
+                            <option value="medium" selected>Medium (regional)</option>
+                            <option value="large">Large (national/international)</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn"><i class="fas fa-calculator"></i> Calculate Costs</button>
+            </form>
+            
+            <div class="calculator-result" id="calculator-result">
+                <h4><i class="fas fa-chart-pie"></i> Cost Comparison Results</h4>
+                <div class="result-item">
+                    <span>Production Method:</span>
+                    <span id="result-method">Reactor</span>
+                </div>
+                <div class="result-item">
+                    <span>Isotope:</span>
+                    <span id="result-isotope">Tc-99m</span>
+                </div>
+                <div class="result-item">
+                    <span>Quantity:</span>
+                    <span id="result-quantity">10 curies</span>
+                </div>
+                <div class="result-item">
+                    <span>Facility Costs:</span>
+                    <span id="result-facility">$2.5 million/year</span>
+                </div>
+                <div class="result-item">
+                    <span>Production Costs:</span>
+                    <span id="result-production">$150,000</span>
+                </div>
+                <div class="result-item">
+                    <span>Total Estimated Cost:</span>
+                    <span id="result-total">$2.85 million</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="quiz" class="comparison">
+        <div class="container">
+            <div class="section-title fade-in">
+                <h2>Isotope Knowledge Quiz</h2>
+                <p>Test your understanding of isotope applications and economics</p>
+            </div>
+            <div class="quiz-container fade-in">
+                <div class="quiz-header">
+                    <h3><i class="fas fa-trophy"></i> The Plug Challenge</h3>
+                    <p>Complete this 5-question quiz to test your knowledge!</p>
+                </div>
+                
+                <div class="quiz-progress">
+                    <div class="progress-bar" id="progress-bar"></div>
+                    <div class="progress-text" id="progress-text">1/5</div>
+                </div>
+                
+                <div id="quiz-questions">
+                    <div class="question active" data-question="1">
+                        <h4>1. Which isotope is most commonly used in medical diagnostics, accounting for about 80% of procedures?</h4>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q1" value="a"> Cobalt-60 (Co-60)
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q1" value="b" data-correct="true"> Technetium-99m (Tc-99m)
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q1" value="c"> Uranium-235 (U-235)
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q1" value="d"> Iodine-131 (I-131)
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="question" data-question="2">
+                        <h4>2. What is the main economic advantage of reactor-based isotope production?</h4>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q2" value="a"> No radioactive waste produced
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q2" value="b"> Can be installed in any hospital
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q2" value="c" data-correct="true"> Lower cost per unit at large scale
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q2" value="d"> Requires minimal infrastructure
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="question" data-question="3">
+                        <h4>3. Which application has the highest market value for isotopes?</h4>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q3" value="a"> Industrial radiography
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q3" value="b"> Food irradiation
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q3" value="c" data-correct="true"> Nuclear medicine
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q3" value="d"> Agricultural research
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="question" data-question="4">
+                        <h4>4. What is the primary advantage of radioisotope generators?</h4>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q4" value="a"> Can produce any isotope needed
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q4" value="b" data-correct="true"> Provide short-lived isotopes on demand
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q4" value="c"> Lowest production costs
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q4" value="d"> No regulatory requirements
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="question" data-question="5">
+                        <h4>5. Which isotope is commonly used for industrial radiography?</h4>
+                        <div class="options">
+                            <label class="option">
+                                <input type="radio" name="q5" value="a"> Technetium-99m
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q5" value="b" data-correct="true"> Iridium-192
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q5" value="c"> Fluorine-18
+                            </label>
+                            <label class="option">
+                                <input type="radio" name="q5" value="d"> Plutonium-238
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="results" id="quiz-results">
+                    <h3>Quiz Completed!</h3>
+                    <div class="score" id="quiz-score">0/5</div>
+                    <div class="feedback" id="quiz-feedback"></div>
+                    <div class="badge" id="quiz-badge">Isotope Novice</div>
+                    <button class="btn" id="retry-quiz"><i class="fas fa-redo"></i> Try Again</button>
+                </div>
+                
+                <div class="quiz-footer">
+                    <button class="btn" id="prev-question" disabled><i class="fas fa-arrow-left"></i> Previous</button>
+                    <button class="btn" id="next-question">Next <i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>About The Plug</h3>
+                    <p>An educational platform showcasing the economic potential and applications of nuclear isotopes across industries.</p>
+                    <p>Developed for HackAtom Rwanda 2025 by Team The Plug.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <a href="#production"><i class="fas fa-chevron-right"></i> Production Methods</a>
+                    <a href="#applications"><i class="fas fa-chevron-right"></i> Applications</a>
+                    <a href="#economics"><i class="fas fa-chevron-right"></i> Economics</a>
+                    <a href="#quiz"><i class="fas fa-chevron-right"></i> Knowledge Quiz</a>
+                </div>
+                <div class="footer-column">
+                    <h3>Resources</h3>
+                    <a href="https://www.iaea.org/" target="_blank"><i class="fas fa-chevron-right"></i> IAEA</a>
+                    <a href="https://www.world-nuclear.org/" target="_blank"><i class="fas fa-chevron-right"></i> World Nuclear Association</a>
+                    <a href="https://www.rosatom.ru/" target="_blank"><i class="fas fa-chevron-right"></i> ROSATOM</a>
+                    <a href="https://www.mephi.ru/" target="_blank"><i class="fas fa-chevron-right"></i> MEPhI University</a>
+                </div>
+                <div class="footer-column">
+                    <h3>Connect With Us</h3>
+                    <p><i class="fas fa-envelope"></i> christomugisha80@gmail.com</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-linkedin"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 The Plug. All rights reserved. | HackAtom Rwanda 2025</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+  // Reactors - real data inspired by industry estimates
+  const ctxReactor = document.getElementById('reactorChart').getContext('2d');
+  const reactorChart = new Chart(ctxReactor, {
+    type: 'bar',
+    data: {
+      labels: ['Capacity', 'Cost', 'Waste', 'Availability'],
+      datasets: [{
+        label: 'Reactor Characteristics',
+        data: [100, 100, 70, 90], // Max scaled values for visualization
+        backgroundColor: ['#4e79a7', '#f28e2b', '#e15759', '#76b7b2']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        title: {
+          display: true,
+          text: 'Nuclear Reactor Characteristics'
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 100,
+          title: {
+            display: true,
+            text: 'Scaled Value'
+          }
+        }
+      }
+    }
+  });
+
+  // Accelerator - example realistic data
+  const ctxAccelerator = document.getElementById('acceleratorChart').getContext('2d');
+  const acceleratorChart = new Chart(ctxAccelerator, {
+    type: 'bar',
+    data: {
+      labels: ['Regulations', 'Cost', 'Waste', 'Production Rate'],
+      datasets: [{
+        label: 'Accelerator Characteristics',
+        data: [50, 70, 20, 80], // Estimated scaled data
+        backgroundColor: ['#59a14f', '#edc949', '#af7aa1', '#ff9da7']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { display: false },
+        title: {
+          display: true,
+          text: 'Accelerator Production Characteristics'
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          max: 100,
+          title: {
+            display: true,
+            text: 'Scaled Value'
+          }
+        }
+      }
+    }
+  });
+
+  // Generator Systems - example data
+  const ctxGenerator = document.getElementById('generatorChart').getContext('2d');
+  const generatorChart = new Chart(ctxGenerator, {
+    type: 'pie',
+    data: {
+      labels: ['On-Demand Availability', 'Portability', 'Shelf Life', 'Supply Chain'],
+      datasets: [{
+        label: 'Generator System Features (scaled)',
+        data: [60, 70, 40, 80], // Estimated scaled importance
+        backgroundColor: ['#e15759', '#76b7b2', '#f28e2b', '#4e79a7']
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: { position: 'bottom' },
+        title: {
+          display: true,
+          text: 'Generator System Features (Scaled)'
+        }
+      }
+    }
+  });
+</script>
+
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 30;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.classList.add('particle');
+                
+                // Random properties
+                const size = Math.random() * 10 + 5;
+                const posX = Math.random() * 100;
+                const duration = Math.random() * 20 + 10;
+                const delay = Math.random() * 20;
+                
+                particle.style.width = `${size}px`;
+                particle.style.height = `${size}px`;
+                particle.style.left = `${posX}%`;
+                particle.style.animationDuration = `${duration}s`;
+                particle.style.animationDelay = `${delay}s`;
+                particle.style.opacity = Math.random() * 0.5 + 0.1;
+                
+                particlesContainer.appendChild(particle);
+            }
+        }
+        
+        createParticles();
+        
+        // Tab system
+        function openTab(evt, tabName) {
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            evt.currentTarget.classList.add('active');
+            
+            // Update charts when tab becomes visible
+            if (tabName === 'reactor-method') {
+                updateReactorChart();
+            } else if (tabName === 'accelerator-method') {
+                updateAcceleratorChart();
+            } else if (tabName === 'generator-method') {
+                updateGeneratorChart();
+            }
+        }
+        
+        // Initialize charts
+        function initCharts() {
+            // Reactor Chart
+            const reactorCtx = document.getElementById('reactorChart').getContext('2d');
+            window.reactorChart = new Chart(reactorCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Mo-99', 'Co-60', 'I-131', 'Lu-177'],
+                    datasets: [{
+                        label: 'Annual Production Capacity (kCi)',
+                        data: [500, 300, 200, 50],
+                        backgroundColor: 'rgba(52, 152, 219, 0.7)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Thousand Curies (kCi)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Accelerator Chart
+            const acceleratorCtx = document.getElementById('acceleratorChart').getContext('2d');
+            window.acceleratorChart = new Chart(acceleratorCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['F-18', 'Cu-64', 'Ga-68', 'I-123'],
+                    datasets: [{
+                        label: 'Daily Production Capacity (Ci)',
+                        data: [10, 5, 3, 2],
+                        backgroundColor: 'rgba(231, 76, 60, 0.7)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Curies (Ci)'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Generator Chart
+            const generatorCtx = document.getElementById('generatorChart').getContext('2d');
+            window.generatorChart = new Chart(generatorCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Mo-99/Tc-99m', 'Ge-68/Ga-68', 'Sr-82/Rb-82'],
+                    datasets: [{
+                        data: [80, 15, 5],
+                        backgroundColor: [
+                            'rgba(46, 204, 113, 0.7)',
+                            'rgba(155, 89, 182, 0.7)',
+                            'rgba(241, 196, 15, 0.7)'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Market Share of Generator Types (%)'
+                        }
+                    }
+                }
+            });
+            
+            // Market Chart
+            const marketCtx = document.getElementById('marketChart').getContext('2d');
+            window.marketChart = new Chart(marketCtx, {
+                type: 'line',
+                data: {
+                    labels: ['2018', '2019', '2020', '2021', '2022', '2023', '2024'],
+                    datasets: [{
+                        label: 'Nuclear Medicine Market ($B)',
+                        data: [4.1, 4.5, 4.7, 5.2, 5.9, 6.5, 7.1],
+                        borderColor: 'rgba(52, 152, 219, 0.7)',
+                        backgroundColor: 'rgba(52, 152, 219, 0.1)',
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            title: {
+                                display: true,
+                                text: 'Billion USD'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Update charts when tab becomes visible
+        function updateReactorChart() {
+            if (window.reactorChart) {
+                window.reactorChart.update();
+            }
+        }
+        
+        function updateAcceleratorChart() {
+            if (window.acceleratorChart) {
+                window.acceleratorChart.update();
+            }
+        }
+        
+        function updateGeneratorChart() {
+            if (window.generatorChart) {
+                window.generatorChart.update();
+            }
+        }
+        
+        // Quiz functionality
+        const questions = document.querySelectorAll('.question');
+        const prevBtn = document.getElementById('prev-question');
+        const nextBtn = document.getElementById('next-question');
+        const progressBar = document.getElementById('progress-bar');
+        const progressText = document.getElementById('progress-text');
+        const quizContainer = document.getElementById('quiz-questions');
+        const resultsContainer = document.getElementById('quiz-results');
+        const quizScore = document.getElementById('quiz-score');
+        const quizFeedback = document.getElementById('quiz-feedback');
+        const quizBadge = document.getElementById('quiz-badge');
+        const retryBtn = document.getElementById('retry-quiz');
+        
+        let currentQuestion = 0;
+        const totalQuestions = questions.length;
+        let score = 0;
+        let userAnswers = Array(totalQuestions).fill(null);
+        
+        function updateProgress() {
+            const progress = ((currentQuestion) / totalQuestions) * 100;
+            progressBar.style.width = `${progress}%`;
+            progressText.textContent = `${currentQuestion + 1}/${totalQuestions}`;
+            
+            prevBtn.disabled = currentQuestion === 0;
+            nextBtn.textContent = currentQuestion === totalQuestions - 1 ? 'Submit' : 'Next';
+        }
+        
+        function showQuestion(index) {
+            questions.forEach((q, i) => {
+                q.classList.toggle('active', i === index);
+            });
+            updateProgress();
+            
+            // Restore selected answer if exists
+            if (userAnswers[index] !== null) {
+                const selectedInput = questions[index].querySelector(`input[value="${userAnswers[index]}"]`);
+                if (selectedInput) {
+                    selectedInput.checked = true;
+                    selectedInput.parentElement.classList.add('selected');
+                }
+            }
+        }
+        
+        function calculateResults() {
+            score = 0;
+            const selectedOptions = document.querySelectorAll('input[type="radio"]:checked');
+            
+            selectedOptions.forEach(option => {
+                if (option.hasAttribute('data-correct')) {
+                    score++;
+                    option.parentElement.classList.add('correct');
+                } else {
+                    option.parentElement.classList.add('incorrect');
+                }
+            });
+            
+            // Highlight correct answers for unanswered questions
+            questions.forEach((q, i) => {
+                if (userAnswers[i] === null) {
+                    const correctOption = q.querySelector('input[data-correct="true"]');
+                    if (correctOption) {
+                        correctOption.parentElement.classList.add('correct');
+                    }
+                }
+            });
+            
+            quizScore.textContent = `${score}/${totalQuestions}`;
+            
+            let feedback = '';
+            const percentage = (score / totalQuestions) * 100;
+            let badge = '';
+            
+            if (percentage >= 80) {
+                feedback = 'Nuclear Expert! You have an exceptional understanding of isotope applications and economics.';
+                badge = 'Isotope Guru';
+            } else if (percentage >= 60) {
+                feedback = 'Well done! You have solid knowledge about nuclear technologies and their economic impact.';
+                badge = 'Isotope Pro';
+            } else if (percentage >= 40) {
+                feedback = 'Good effort! You know some basics but could benefit from exploring more about isotope applications.';
+                badge = 'Isotope Explorer';
+            } else {
+                feedback = 'Getting started! The world of isotopes is fascinating - keep learning to discover more!';
+                badge = 'Isotope Novice';
+            }
+            
+            quizFeedback.textContent = feedback;
+            quizBadge.textContent = badge;
+        }
+        
+        nextBtn.addEventListener('click', () => {
+            // Save current answer
+            const selectedOption = questions[currentQuestion].querySelector('input[type="radio"]:checked');
+            userAnswers[currentQuestion] = selectedOption ? selectedOption.value : null;
+            
+            if (currentQuestion === totalQuestions - 1) {
+                // Submit quiz
+                calculateResults();
+                quizContainer.style.display = 'none';
+                resultsContainer.style.display = 'block';
+                document.querySelector('.quiz-footer').style.display = 'none';
+            } else {
+                currentQuestion++;
+                showQuestion(currentQuestion);
+            }
+        });
+        
+        prevBtn.addEventListener('click', () => {
+            // Save current answer
+            const selectedOption = questions[currentQuestion].querySelector('input[type="radio"]:checked');
+            userAnswers[currentQuestion] = selectedOption ? selectedOption.value : null;
+            
+            currentQuestion--;
+            showQuestion(currentQuestion);
+        });
+        
+        retryBtn.addEventListener('click', () => {
+            // Reset quiz
+            currentQuestion = 0;
+            score = 0;
+            userAnswers = Array(totalQuestions).fill(null);
+            
+            document.querySelectorAll('input[type="radio"]').forEach(radio => {
+                radio.checked = false;
+            });
+            
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected', 'correct', 'incorrect');
+            });
+            
+            quizContainer.style.display = 'block';
+            resultsContainer.style.display = 'none';
+            document.querySelector('.quiz-footer').style.display = 'flex';
+            showQuestion(currentQuestion);
+        });
+        
+        // Add selection styling to options
+        document.querySelectorAll('.option input').forEach(input => {
+            input.addEventListener('change', function() {
+                this.parentElement.classList.add('selected');
+                this.parentElement.parentElement.querySelectorAll('.option').forEach(opt => {
+                    if (opt !== this.parentElement) {
+                        opt.classList.remove('selected');
+                    }
+                });
+            });
+        });
+        
+        // Cost calculator functionality
+        const costForm = document.getElementById('cost-calculator');
+        const resultContainer = document.getElementById('calculator-result');
+        
+        // Sample cost data (simplified for demo)
+        const costData = {
+            reactor: {
+                tc99m: { small: 400000, medium: 200000, large: 150000 },
+                co60: { small: 350000, medium: 180000, large: 120000 },
+                i131: { small: 380000, medium: 190000, large: 140000 },
+                mo99: { small: 420000, medium: 220000, large: 170000 },
+                f18: { small: 500000, medium: 300000, large: 250000 }
+            },
+            accelerator: {
+                tc99m: { small: 450000, medium: 250000, large: 200000 },
+                co60: { small: 500000, medium: 300000, large: 250000 },
+                i131: { small: 420000, medium: 220000, large: 180000 },
+                mo99: { small: 480000, medium: 280000, large: 230000 },
+                f18: { small: 200000, medium: 150000, large: 120000 }
+            },
+            generator: {
+                tc99m: { small: 100000, medium: 80000, large: 60000 },
+                co60: { small: 120000, medium: 90000, large: 70000 },
+                i131: { small: 110000, medium: 85000, large: 65000 },
+                mo99: { small: 130000, medium: 95000, large: 75000 },
+                f18: { small: 90000, medium: 70000, large: 50000 }
+            }
+        };
+        
+        const facilityCosts = {
+            reactor: { small: 5000000, medium: 10000000, large: 20000000 },
+            accelerator: { small: 2000000, medium: 5000000, large: 10000000 },
+            generator: { small: 500000, medium: 1000000, large: 2000000 }
+        };
+        
+        costForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const method = document.getElementById('production-method').value;
+            const isotope = document.getElementById('isotope').value;
+            const quantity = parseInt(document.getElementById('quantity').value);
+            const size = document.getElementById('facility-size').value;
+            
+            if (!method || !isotope) {
+                alert('Please select both production method and isotope');
+                return;
+            }
+            
+            // Get costs from our data
+            const unitCost = costData[method][isotope][size];
+            const facilityCost = facilityCosts[method][size];
+            const productionCost = unitCost * quantity;
+            const totalCost = facilityCost + productionCost;
+            
+            // Update results
+            document.getElementById('result-method').textContent = 
+                method === 'reactor' ? 'Reactor' : 
+                method === 'accelerator' ? 'Accelerator' : 'Generator';
+            document.getElementById('result-isotope').textContent = getIsotopeName(isotope);
+            document.getElementById('result-quantity').textContent = `${quantity} curies`;
+            document.getElementById('result-facility').textContent = formatCurrency(facilityCost) + '/year';
+            document.getElementById('result-production').textContent = formatCurrency(productionCost);
+            document.getElementById('result-total').textContent = formatCurrency(totalCost);
+            
+            // Show results
+            resultContainer.style.display = 'block';
+        });
+        
+        function getIsotopeName(code) {
+            const names = {
+                tc99m: 'Technetium-99m (Tc-99m)',
+                co60: 'Cobalt-60 (Co-60)',
+                i131: 'Iodine-131 (I-131)',
+                mo99: 'Molybdenum-99 (Mo-99)',
+                f18: 'Fluorine-18 (F-18)'
+            };
+            return names[code];
+        }
+        
+        function formatCurrency(amount) {
+            if (amount >= 1000000) {
+                return '$' + (amount / 1000000).toFixed(2) + ' million';
+            } else if (amount >= 1000) {
+                return '$' + (amount / 1000).toFixed(1) + ' thousand';
+            }
+            return '$' + amount.toLocaleString();
+        }
+        
+        // Animation on scroll
+        const fadeElements = document.querySelectorAll('.fade-in');
+        
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+        
+        fadeElements.forEach(el => {
+            el.style.opacity = 0;
+            el.style.transform = 'translateY(20px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
